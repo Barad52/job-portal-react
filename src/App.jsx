@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
+import BASE_URL from "./config";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -15,8 +16,7 @@ function App() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
 
-  const API_URL = "https://job-portal-backend-38ve.onrender.com/jobs";
-
+  const API_URL = `${BASE_URL}/jobs`;
 
   return (
     <>
