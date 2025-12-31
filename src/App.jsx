@@ -15,7 +15,8 @@ function App() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
 
-  const API_URL = "http://localhost:5000/jobs";
+  const API_URL = "https://job-portal-backend-38ve.onrender.com/jobs";
+
 
   return (
     <>
