@@ -8,11 +8,32 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container">
-        
+
         {/* Brand */}
         <Link className="navbar-brand fw-bold" to="/">
           Job Portal
         </Link>
+
+        {/* Left Side */}
+        {user?.role === "worker" && (
+          <Link className="nav-link" to="/my-applications">
+            My Applications
+          </Link>
+        )}
+
+        {/* Profile Link */}
+        {user?.role === "worker" && (
+          <Link className="nav-link" to="/profile">
+            My Profile
+          </Link>
+        )}
+
+        {/* Employer Dashboard Link */}
+        {user?.role === "admin" && (
+          <Link className="nav-link" to="/employer-dashboard">
+            Dashboard
+          </Link>
+        )}
 
         {/* Right Side */}
         <div className="d-flex align-items-center">

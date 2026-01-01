@@ -5,6 +5,10 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Jobs from "./pages/Jobs";
 import Home from "./pages/Home";
+import Applicants from "./pages/Applicants";
+import AppliedJobs from "./pages/AppliedJobs";
+import Profile from "./pages/Profile";
+import EmployerDashboard from "./pages/EmployerDashboard";
 import BASE_URL from "./config";
 
 import Navbar from "./components/Navbar";
@@ -27,6 +31,35 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/applicants/:jobId"
+            element={
+              <ProtectedRoute>
+                <Applicants />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-applications"
+            element={
+              <ProtectedRoute>
+                <AppliedJobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />.
+          <Route
+            path="/employer-dashboard"
+            element={
+              <ProtectedRoute>
+                <EmployerDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/jobs"
