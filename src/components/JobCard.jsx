@@ -1,10 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import BASE_URL from "../config";
 import { Link } from "react-router-dom";
 
 function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
   const { user } = useContext(AuthContext);
+
+  // 🔥 NEW STATE
+  const [applied, setApplied] = useState(false);
 
   // 🗑 DELETE JOB (ADMIN)
   function handleDelete() {
@@ -20,16 +23,29 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
 
   // 🟢 APPLY JOB (WORKER)
   function applyJob() {
-    fetch(`${BASE_URL}/applications/apply`, {
-      method: "POST",
+    fetch(`${BASE_URL}/users/me`, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: localStorage.getItem("token")
-      },
-      body: JSON.stringify({ jobId: job._id })
+      }
     })
       .then(res => res.json())
-      .then(data => alert(data.message));
+      .then(profile => {
+        if (!profile.skills.length || !profile.experience) {
+          alert("Please complete your profile before applying");
+          return;
+        }
+
+        return fetch(`${BASE_URL}/applications/apply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token")
+          },
+          body: JSON.stringify({ jobId: job._id })
+        });
+      })
+      .then(res => res && res.json())
+      .then(data => data && alert(data.message));
   }
 
   // 🔄 TOGGLE JOB STATUS (ADMIN)
@@ -68,8 +84,7 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
           {/* 🧠 REQUIRED SKILLS */}
           {job.requiredSkills?.length > 0 && (
             <p className="text-muted mb-2">
-              <strong>Skills:</strong>{" "}
-              {job.requiredSkills.join(", ")}
+              <strong>Skills:</strong> {job.requiredSkills.join(", ")}
             </p>
           )}
 
@@ -111,9 +126,10 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
           {user?.role === "worker" && job.status === "open" && (
             <button
               className="btn btn-success btn-sm mt-2"
+              disabled={applied}
               onClick={applyJob}
             >
-              Apply
+              {applied ? "Applied" : "Apply"}
             </button>
           )}
 
@@ -125,7 +141,6 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
       </div>
     </div>
   );
-
 }
 
 export default JobCard;
