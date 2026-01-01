@@ -59,10 +59,19 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
       <div className="card h-100 shadow-sm">
         <div className="card-body">
           <h5 className="text-primary">{job.title}</h5>
+
           <p>
             {job.company} | {job.location}<br />
             ₹{job.salary}
           </p>
+
+          {/* 🧠 REQUIRED SKILLS */}
+          {job.requiredSkills?.length > 0 && (
+            <p className="text-muted mb-2">
+              <strong>Skills:</strong>{" "}
+              {job.requiredSkills.join(", ")}
+            </p>
+          )}
 
           {/* 👑 ADMIN CONTROLS */}
           {user?.role === "admin" && (
@@ -88,7 +97,6 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
                 View Applicants
               </Link>
 
-              {/* 🟢🔴 OPEN / CLOSE BUTTON */}
               <button
                 className={`btn btn-sm ${job.status === "open" ? "btn-secondary" : "btn-success"
                   }`}
@@ -99,20 +107,25 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
             </>
           )}
 
-
-          {/* 👷 WORKER APPLY BUTTON */}
-          {user?.role === "worker" && (
+          {/* 👷 WORKER APPLY */}
+          {user?.role === "worker" && job.status === "open" && (
             <button
-              className="btn btn-success btn-sm"
+              className="btn btn-success btn-sm mt-2"
               onClick={applyJob}
             >
               Apply
             </button>
           )}
+
+          {/* 🔴 CLOSED BADGE */}
+          {job.status === "closed" && (
+            <span className="badge bg-danger mt-2">Closed</span>
+          )}
         </div>
       </div>
     </div>
   );
+
 }
 
 export default JobCard;
