@@ -8,71 +8,79 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container">
-
-        {/* Brand */}
         <Link className="navbar-brand fw-bold" to="/">
           Job Portal
         </Link>
 
-        {/* Left Side */}
-        {user?.role === "worker" && (
-          <Link className="nav-link" to="/my-applications">
-            My Applications
-          </Link>
-        )}
+        <div className="collapse navbar-collapse show">
+          {/* LEFT MENU */}
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {user?.role === "worker" && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/my-applications">
+                    My Applications
+                  </Link>
+                </li>
 
-        {/* Profile Link */}
-        {user?.role === "worker" && (
-          <Link className="nav-link" to="/profile">
-            My Profile
-          </Link>
-        )}
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    My Profile
+                  </Link>
+                </li>
+              </>
+            )}
 
-        {/* Employer Dashboard Link */}
-        {user?.role === "admin" && (
-          <Link className="nav-link" to="/employer-dashboard">
-            Dashboard
-          </Link>
-        )}
+            {user?.role === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/employer-dashboard">
+                  Dashboard
+                </Link>
+              </li>
+            )}
+          </ul>
 
-        {/* Right Side */}
-        <div className="d-flex align-items-center">
-          {user ? (
-            <>
-              <span className="text-white me-3">
-                Hello, {user.name}
-              </span>
+          {/* RIGHT MENU */}
+          <div className="d-flex align-items-center">
+            {user ? (
+              <>
+                <span className="text-white me-3">
+                  Hello, {user.name}
+                </span>
 
-              <Link className="btn btn-outline-light btn-sm me-2" to="/jobs">
-                Jobs
-              </Link>
+                <Link
+                  className="btn btn-outline-light btn-sm me-2"
+                  to="/jobs"
+                >
+                  Jobs
+                </Link>
 
-              <button
-                className="btn btn-light btn-sm"
-                onClick={logout}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                className="btn btn-outline-light btn-sm me-2"
-                to="/login"
-              >
-                Login
-              </Link>
+                <button
+                  className="btn btn-light btn-sm"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  className="btn btn-outline-light btn-sm me-2"
+                  to="/login"
+                >
+                  Login
+                </Link>
 
-              <Link
-                className="btn btn-light btn-sm"
-                to="/register"
-              >
-                Register
-              </Link>
-            </>
-          )}
+                <Link
+                  className="btn btn-light btn-sm"
+                  to="/register"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
         </div>
-
       </div>
     </nav>
   );

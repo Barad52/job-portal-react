@@ -51,7 +51,7 @@ function App() {
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } />.
+          } />
           <Route
             path="/employer-dashboard"
             element={
