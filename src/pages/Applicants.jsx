@@ -9,7 +9,7 @@ function Applicants() {
   useEffect(() => {
     fetch(`${BASE_URL}/applications/job/${jobId}`, {
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
       .then(res => res.json())
@@ -21,7 +21,7 @@ function Applicants() {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({ status })
     })
@@ -47,18 +47,22 @@ function Applicants() {
             <li key={app._id} className="list-group-item">
               <strong>{app.worker.name}</strong><br />
               <small>{app.worker.email}</small><br />
+              <small>
+                Skills: {app.worker.skills.join(", ") || "N/A"} <br />
+                Experience: {app.worker.experience || "N/A"}
+              </small>
 
-              <span className="badge bg-secondary me-2">
-                {app.status}
-              </span>
+              <div className="mt-2">
+                <span className="badge bg-secondary me-2">
+                  {app.status}
+                </span>
+              </div>
 
               <div className="mt-2">
                 <button
                   className="btn btn-success btn-sm me-2"
                   disabled={app.status === "shortlisted"}
-                  onClick={() =>
-                    updateStatus(app._id, "shortlisted")
-                  }
+                  onClick={() => updateStatus(app._id, "shortlisted")}
                 >
                   Shortlist
                 </button>
@@ -66,9 +70,7 @@ function Applicants() {
                 <button
                   className="btn btn-danger btn-sm"
                   disabled={app.status === "rejected"}
-                  onClick={() =>
-                    updateStatus(app._id, "rejected")
-                  }
+                  onClick={() => updateStatus(app._id, "rejected")}
                 >
                   Reject
                 </button>

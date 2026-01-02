@@ -7,7 +7,7 @@ function EmployerDashboard() {
   useEffect(() => {
     fetch(`${BASE_URL}/dashboard/stats`, {
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
       .then(res => res.json())

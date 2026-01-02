@@ -1,129 +1,90 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import BASE_URL from "../config";
 import { Link } from "react-router-dom";
 
 function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
   const { user } = useContext(AuthContext);
-
-  // 🔥 NEW STATE
   const [applied, setApplied] = useState(false);
 
-  // 🗑 DELETE JOB (ADMIN)
+  // 🔥 CHECK ALREADY APPLIED
+  useEffect(() => {
+    if (user?.role === "user") {
+      fetch(`${BASE_URL}/applications/my`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+        .then(res => res.json())
+        .then(apps => {
+          const found = apps.find(a => a.job?._id === job._id);
+          if (found) setApplied(true);
+        });
+    }
+  }, [job._id, user]);
+
+  function applyJob() {
+    fetch(`${BASE_URL}/applications/apply`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ jobId: job._id })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.application) {
+          setApplied(true);
+          alert("Applied successfully");
+        } else {
+          alert(data.message);
+        }
+      });
+  }
+
   function handleDelete() {
     fetch(`${API_URL}/${job._id}`, {
       method: "DELETE",
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(() => {
       setJobs(jobs.filter(j => j._id !== job._id));
     });
   }
 
-  // 🟢 APPLY JOB (WORKER)
-  function applyJob() {
-    fetch(`${BASE_URL}/users/me`, {
-      headers: {
-        Authorization: localStorage.getItem("token")
-      }
-    })
-      .then(res => res.json())
-      .then(profile => {
-        if (!profile.skills.length || !profile.experience) {
-          alert("Please complete your profile before applying");
-          return;
-        }
-
-        return fetch(`${BASE_URL}/applications/apply`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("token")
-          },
-          body: JSON.stringify({ jobId: job._id })
-        });
-      })
-      .then(res => res && res.json())
-      .then(data => data && alert(data.message));
-  }
-
-  // 🔄 TOGGLE JOB STATUS (ADMIN)
-  function toggleStatus() {
-    fetch(`${API_URL}/${job._id}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token")
-      },
-      body: JSON.stringify({
-        status: job.status === "open" ? "closed" : "open"
-      })
-    })
-      .then(res => res.json())
-      .then(updatedJob => {
-        setJobs(
-          jobs.map(j =>
-            j._id === updatedJob._id ? updatedJob : j
-          )
-        );
-      });
-  }
-
   return (
     <div className="col-md-4 mb-3">
       <div className="card h-100 shadow-sm">
         <div className="card-body">
-          <h5 className="text-primary">{job.title}</h5>
-
+          <h5>{job.title}</h5>
           <p>
             {job.company} | {job.location}<br />
             ₹{job.salary}
           </p>
 
-          {/* 🧠 REQUIRED SKILLS */}
           {job.requiredSkills?.length > 0 && (
-            <p className="text-muted mb-2">
-              <strong>Skills:</strong> {job.requiredSkills.join(", ")}
-            </p>
+            <p><strong>Skills:</strong> {job.requiredSkills.join(", ")}</p>
           )}
 
-          {/* 👑 ADMIN CONTROLS */}
+          {/* ADMIN */}
           {user?.role === "admin" && (
             <>
-              <button
-                className="btn btn-warning btn-sm me-2"
-                onClick={() => setEditJob(job)}
-              >
+              <button className="btn btn-warning btn-sm me-2" onClick={() => setEditJob(job)}>
                 Edit
               </button>
-
-              <button
-                className="btn btn-danger btn-sm me-2"
-                onClick={handleDelete}
-              >
+              <button className="btn btn-danger btn-sm me-2" onClick={handleDelete}>
                 Delete
               </button>
-
-              <Link
-                to={`/applicants/${job._id}`}
-                className="btn btn-info btn-sm me-2"
-              >
+              <Link to={`/applicants/${job._id}`} className="btn btn-info btn-sm">
                 View Applicants
               </Link>
-
-              <button
-                className={`btn btn-sm ${job.status === "open" ? "btn-secondary" : "btn-success"
-                  }`}
-                onClick={toggleStatus}
-              >
-                {job.status === "open" ? "Close Job" : "Reopen Job"}
-              </button>
             </>
           )}
 
-          {/* 👷 WORKER APPLY */}
-          {user?.role === "worker" && job.status === "open" && (
+          {/* USER */}
+          {user?.role === "user" && job.status === "open" && (
             <button
               className="btn btn-success btn-sm mt-2"
               disabled={applied}
@@ -133,7 +94,6 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
             </button>
           )}
 
-          {/* 🔴 CLOSED BADGE */}
           {job.status === "closed" && (
             <span className="badge bg-danger mt-2">Closed</span>
           )}

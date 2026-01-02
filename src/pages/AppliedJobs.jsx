@@ -7,7 +7,7 @@ function AppliedJobs() {
   useEffect(() => {
     fetch(`${BASE_URL}/applications/my`, {
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
       .then(res => res.json())
@@ -28,11 +28,20 @@ function AppliedJobs() {
                 <div className="card-body">
                   <h5>{app.job.title}</h5>
                   <p>
-                    {app.job.company} | {app.job.location}  
+                    {app.job.company} | {app.job.location}
                     <br />
                     ₹{app.job.salary}
                   </p>
-                  <span className="badge bg-primary">
+
+                  <span
+                    className={`badge ${
+                      app.status === "shortlisted"
+                        ? "bg-success"
+                        : app.status === "rejected"
+                        ? "bg-danger"
+                        : "bg-primary"
+                    }`}
+                  >
                     {app.status}
                   </span>
                 </div>
