@@ -67,9 +67,10 @@ function App() {
           <Route path="/dashboard/jobs" element={<AdminJobs />} />
           <Route path="/dashboard/open-jobs" element={<AdminJobs filter="open" />} />
           <Route path="/dashboard/closed-jobs" element={<AdminJobs filter="closed" />} />
-          <Route path="/dashboard/applications" element={<AdminApplications />} />
+          <Route path="/dashboard/applications" element={<AdminApplications title="All Applications" />} />
           <Route path="/dashboard/shortlisted" element={<AdminShortlisted />} />
           <Route path="/dashboard/rejected" element={<AdminRejected />} />
+
 
 
           <Route

@@ -1,4 +1,12 @@
 import AdminApplications from "./AdminApplications";
-export default function AdminShortlisted() {
-  return <AdminApplications status="shortlisted" />;
+
+function AdminShortlisted() {
+  return (
+    <AdminApplications
+      status="shortlisted"
+      title="Shortlisted Applications"
+    />
+  );
 }
+
+export default AdminShortlisted;

@@ -1,4 +1,12 @@
 import AdminApplications from "./AdminApplications";
-export default function AdminRejected() {
-  return <AdminApplications status="rejected" />;
+
+function AdminRejected() {
+  return (
+    <AdminApplications
+      status="rejected"
+      title="Rejected Applications"
+    />
+  );
 }
+
+export default AdminRejected;
