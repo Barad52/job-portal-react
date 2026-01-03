@@ -15,15 +15,19 @@ function JobCard({ job, jobs, setJobs, setEditJob, API_URL }) {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
+      }).then(res => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
       })
-        .then(res => res.json())
         .then(apps => {
-          const already = apps.find(
-            a => a.job && a.job._id === job._id
-          );
-          if (already) setApplied(true);
+          if (Array.isArray(apps)) {
+            const already = apps.find(
+              a => a.job && a.job._id === job._id
+            );
+            if (already) setApplied(true);
+          }
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error("Apply check error:", err));
     }
   }, [job._id, user]);
 

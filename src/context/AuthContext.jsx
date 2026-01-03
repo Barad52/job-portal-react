@@ -4,21 +4,21 @@ export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 🔥 NEW
+  const [loading, setLoading] = useState(true);
 
-  // 🔁 Restore user on refresh
+  // 🔁 Restore worker on refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("worker");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedWorker = localStorage.getItem("worker");
+    if (storedWorker) {
+      setUser(JSON.parse(storedWorker));
     }
-    setLoading(false); // 🔥 IMPORTANT
+    setLoading(false);
   }, []);
 
-  function login(userData, token) {
+  function login(workerData, token) {
     localStorage.setItem("token", token);
-    localStorage.setItem("worker", JSON.stringify(userData));
-    setUser(userData);
+    localStorage.setItem("worker", JSON.stringify(workerData));
+    setUser(workerData);
   }
 
   function logout() {
