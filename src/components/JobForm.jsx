@@ -43,7 +43,7 @@ function JobForm({ jobs, setJobs, editJob, setEditJob, API_URL }) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       }).then(() => {
@@ -66,7 +66,7 @@ function JobForm({ jobs, setJobs, editJob, setEditJob, API_URL }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       })
