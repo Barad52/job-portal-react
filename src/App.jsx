@@ -9,6 +9,10 @@ import Applicants from "./pages/Applicants";
 import AppliedJobs from "./pages/AppliedJobs";
 import Profile from "./pages/Profile";
 import EmployerDashboard from "./pages/EmployerDashboard";
+import AdminJobs from "./pages/AdminJobs";
+import AdminApplications from "./pages/AdminApplications";
+import AdminShortlisted from "./pages/AdminShortlisted";
+import AdminRejected from "./pages/AdminRejected";
 import BASE_URL from "./config";
 
 import Navbar from "./components/Navbar";
@@ -60,6 +64,13 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/dashboard/jobs" element={<AdminJobs />} />
+          <Route path="/dashboard/open-jobs" element={<AdminJobs filter="open" />} />
+          <Route path="/dashboard/closed-jobs" element={<AdminJobs filter="closed" />} />
+          <Route path="/dashboard/applications" element={<AdminApplications />} />
+          <Route path="/dashboard/shortlisted" element={<AdminShortlisted />} />
+          <Route path="/dashboard/rejected" element={<AdminRejected />} />
+
 
           <Route
             path="/jobs"

@@ -9,7 +9,7 @@ function Profile() {
   useEffect(() => {
     fetch(`${BASE_URL}/users/me`, {
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
       .then(res => res.json())
@@ -30,7 +30,7 @@ function Profile() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token")
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
         skills: skills.split(",").map(s => s.trim()).filter(Boolean),

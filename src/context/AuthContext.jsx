@@ -8,7 +8,7 @@ function AuthProvider({ children }) {
 
   // 🔁 Restore user on refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("worker");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -17,13 +17,13 @@ function AuthProvider({ children }) {
 
   function login(userData, token) {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("worker", JSON.stringify(userData));
     setUser(userData);
   }
 
   function logout() {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("worker");
     setUser(null);
   }
 
