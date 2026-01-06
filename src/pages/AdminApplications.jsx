@@ -3,34 +3,35 @@ import BASE_URL from "../config";
 
 function AdminApplications({ status, title }) {
   const [apps, setApps] = useState([]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetch(`${BASE_URL}/dashboard/applications`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (status) {
-          data = data.filter(a => a.status === status);
+    fetch(
+      `${BASE_URL}/dashboard/applications${status ? `?status=${status}` : ""}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-        setApps(data);
-      });
-  }, [status]);
+      }
+    )
+      .then(res => res.json())
+      .then(data => setApps(data))
+      .catch(err => console.error(err));
+  }, [status, token]);
 
+  // 🔁 UPDATE APPLICATION STATUS
   function updateStatus(id, newStatus) {
     fetch(`${BASE_URL}/applications/${id}/status`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({ status: newStatus })
     })
       .then(res => res.json())
       .then(() => {
-        // 🔥 REMOVE FROM CURRENT LIST
+        // 🔥 Remove from current list after action
         setApps(prev => prev.filter(a => a._id !== id));
       });
   }
@@ -39,31 +40,47 @@ function AdminApplications({ status, title }) {
     <div className="container">
       <h4 className="mb-3">{title}</h4>
 
-      {apps.length === 0 && <p>No applications found.</p>}
+      {apps.length === 0 && (
+        <p className="text-muted">No applications found.</p>
+      )}
 
       {apps.map(app => (
         <div key={app._id} className="card p-3 mb-3 shadow-sm">
+          {/* WORKER INFO */}
           <h6>
-            {app.worker.name} ({app.worker.email})
+            {app.worker.name}{" "}
+            <small className="text-muted">({app.worker.email})</small>
           </h6>
 
-          <p>
-            <strong>Job:</strong> {app.job.title}<br />
-            <strong>Skills:</strong> {app.worker.skills.join(", ")}<br />
-            <strong>Experience:</strong> {app.worker.experience}
+          {/* JOB INFO */}
+          <p className="mb-2">
+            <strong>Company:</strong> {app.job.company}<br />
+            <strong>Job:</strong> {app.job.title}
           </p>
 
-          {!status && (
+          {/* SKILLS + EXPERIENCE */}
+          <p className="mb-2">
+            <strong>Skills:</strong>{" "}
+            {app.worker.skills.length
+              ? app.worker.skills.join(", ")
+              : "N/A"}
+            <br />
+            <strong>Experience:</strong>{" "}
+            {app.worker.experience || "N/A"}
+          </p>
+
+          {/* ACTIONS */}
+          {app.status === "applied" && (
             <>
               <button
-                className="btn btn-success btn-sm me-2"
+                className="btn btn-outline-success btn-sm me-2"
                 onClick={() => updateStatus(app._id, "shortlisted")}
               >
                 Shortlist
               </button>
 
               <button
-                className="btn btn-danger btn-sm"
+                className="btn btn-outline-danger btn-sm"
                 onClick={() => updateStatus(app._id, "rejected")}
               >
                 Reject
@@ -71,10 +88,13 @@ function AdminApplications({ status, title }) {
             </>
           )}
 
-          {status && (
-            <span className="badge bg-secondary">
-              {app.status}
-            </span>
+          {/* STATUS BADGE */}
+          {app.status === "shortlisted" && (
+            <span className="badge bg-success">Shortlisted</span>
+          )}
+
+          {app.status === "rejected" && (
+            <span className="badge bg-danger">Rejected</span>
           )}
         </div>
       ))}
