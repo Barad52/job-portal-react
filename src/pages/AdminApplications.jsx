@@ -19,7 +19,6 @@ function AdminApplications({ status, title }) {
       .catch(err => console.error(err));
   }, [status, token]);
 
-  // 🔁 UPDATE APPLICATION STATUS
   function updateStatus(id, newStatus) {
     fetch(`${BASE_URL}/applications/${id}/status`, {
       method: "PATCH",
@@ -31,7 +30,6 @@ function AdminApplications({ status, title }) {
     })
       .then(res => res.json())
       .then(() => {
-        // 🔥 Remove from current list after action
         setApps(prev => prev.filter(a => a._id !== id));
       });
   }
@@ -46,19 +44,16 @@ function AdminApplications({ status, title }) {
 
       {apps.map(app => (
         <div key={app._id} className="card p-3 mb-3 shadow-sm">
-          {/* WORKER INFO */}
           <h6>
             {app.worker.name}{" "}
             <small className="text-muted">({app.worker.email})</small>
           </h6>
 
-          {/* JOB INFO */}
           <p className="mb-2">
             <strong>Company:</strong> {app.job.company}<br />
             <strong>Job:</strong> {app.job.title}
           </p>
 
-          {/* SKILLS + EXPERIENCE */}
           <p className="mb-2">
             <strong>Skills:</strong>{" "}
             {app.worker.skills.length
@@ -69,7 +64,6 @@ function AdminApplications({ status, title }) {
             {app.worker.experience || "N/A"}
           </p>
 
-          {/* ACTIONS */}
           {app.status === "applied" && (
             <>
               <button
@@ -88,7 +82,6 @@ function AdminApplications({ status, title }) {
             </>
           )}
 
-          {/* STATUS BADGE */}
           {app.status === "shortlisted" && (
             <span className="badge bg-success">Shortlisted</span>
           )}
